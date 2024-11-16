@@ -6,13 +6,12 @@ export default defineConfig({
   plugins: [react()],
   // server: {
   //   proxy: {
-  //     "/api": {
-  //       target: "http://192.168.1.21:8000",
-  //       changeOrigin: true,
-  //       rewrite: path => path.replace(/^\api/, '')
+  //     '/api': {
+  //       target: "http://localhost:4000/",
+  //       changeOrigin: true
   //     }
   //   }
-  // }
+  // },
   resolve: {
     alias: {
       process: "process/browser"

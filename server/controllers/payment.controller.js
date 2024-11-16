@@ -1,6 +1,7 @@
 import Coupon from "../models/coupon.model.js";
 import Order from "../models/orders.model.js";
 import { stripe } from "../libs/stripe.js";
+import userModel from "../models/user.model.js";
 
 export const createCheckoutSession = async (req, res) => {
 	try {
@@ -77,6 +78,11 @@ export const checkoutSuccess = async (req, res) => {
 	try {
 		const { sessionId } = req.body;
 		const session = await stripe.checkout.sessions.retrieve(sessionId);
+		const userId = req.user.id
+
+		const user = await userModel.findById(userId)
+		user.cartItems = []
+		user.save()
 
 		if (session.payment_status === "paid") {
 			if (session.metadata.couponCode) {
@@ -106,7 +112,7 @@ export const checkoutSuccess = async (req, res) => {
 
 			await newOrder.save();
 
-			res.status(200).json({
+			return res.status(200).json({
 				success: true,
 				message: "Payment successful, order created, and coupon deactivated if used.",
 				orderId: newOrder._id,
